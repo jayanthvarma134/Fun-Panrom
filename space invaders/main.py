@@ -18,12 +18,23 @@ background_img = pygame.image.load('spritesandimages/background_set.png')
 score = 0
  
 #bullet 
-bullet_img = pygame.image.load('spritesandimages/bullet.png')
+number_of_strikes = 0
+bullet_img =[]
+bulletX = []
+bulletY = []
+bulletX_change = []
+bulletY_change = []
+#bullet_state = []
+
+'''bullet_img = pygame.image.load('spritesandimages/bullet.png')
 bulletX = 0
 bulletY = 480
 bulletX_change = 0
-bulletY_change = 10
-bullet_state = 'ready'
+bulletY_change = 10'''
+#bullet state
+bullet_state = []
+for i in range(150):
+	bullet_state.append('ready')
 
 #Player
 player_img = pygame.image.load('spritesandimages/space_ship.png')
@@ -32,22 +43,29 @@ playerY = 480
 playerX_change = 0
 
 #Enemy
-enemy_img = pygame.image.load('spritesandimages/enemy.png')
-enemyX = random.randint(0,736)
-enemyY = random.randint(20, 200)
-enemyX_change = 5
-enemyY_change = 40
+num_of_enemies = 5
+enemy_img=[]
+enemyX=[]
+enemyY=[]
+enemyX_change =[]
+enemyY_change=[]
+for i in range(num_of_enemies):
+	enemy_img.append(pygame.image.load('spritesandimages/enemy.png'))
+	enemyX.append(random.randint(0,736))
+	enemyY.append(random.randint(20, 200))
+	enemyX_change.append(5)
+	enemyY_change.append(40)
 
 def player(x, y):
 	screen.blit(player_img, (x, y))
 
-def enemy(x, y):
-	screen.blit(enemy_img, (x, y)) 
+def enemy(x, y, i):
+	screen.blit(enemy_img[i], (x, y)) 
 
-def fire_bullet(x, y):
+def fire_bullet(x, y, j):
 	global bullet_state
-	bullet_state ='fire'
-	screen.blit(bullet_img, (x+16, y+10))
+	bullet_state[j] ='fire'
+	screen.blit(bullet_img[j], (x+16, y+10))
 
 def is_Collision(enemyX, enemyY, bulletX, bulletY):
 	distance = math.sqrt(math.pow(enemyX-bulletX, 2) + pow(enemyY-bulletY, 2))
@@ -63,6 +81,7 @@ while running:
 	#screen.fill((0, 0, 0))
 	screen.blit(background_img, (0,0))
 
+	#bullets emerging in dynamic real time
 	for events in pygame.event.get():
 
 		if events.type == pygame.QUIT:
@@ -75,20 +94,29 @@ while running:
 			if events.key == pygame.K_RIGHT:
 				playerX_change = 5
 			if events.key == pygame.K_UP: 
-				if bullet_state is 'ready':
-					bullet_state = 'fire'
-					bulletX= playerX
+				number_of_strikes +=1
+				bullet_img.append(pygame.image.load('spritesandimages/bullet.png'))
+				bulletX.append(0)
+				bulletY.append(480)
+				bulletX_change.append(0)
+				bulletY_change.append(10)
+				#bullet_state.append('ready')
+				for j in range(number_of_strikes):
+					if bullet_state[j] is 'ready':
+						bullet_state[j] = 'fire'
+						bulletX[j]= playerX
 
 		if events.type == pygame.KEYUP:
 			if events.key == pygame.K_LEFT or events.key == pygame.K_RIGHT:
 				playerX_change = 0
 
-	if bullet_state is 'fire':
-		bulletY -= bulletY_change
-		fire_bullet(bulletX, bulletY)
-	if bulletY <= 0:
-		bulletY = 480
-		bullet_state = 'ready'
+	for j2 in range(number_of_strikes) :
+		if bullet_state[j2] is 'fire':
+			bulletY[j2] -= bulletY_change[j2]
+			fire_bullet(bulletX[j2], bulletY[j2], j2)
+		'''if bulletY[j] <= 0:
+			bulletY[j] = 480
+			bullet_state[j] = ('ready')'''
 
 	playerX = playerX + playerX_change
 	if playerX < 0 :
@@ -96,24 +124,26 @@ while running:
 	if playerX > 736 :
 		playerX = 736
 
-	enemyX = enemyX + enemyX_change
-	if enemyX < 0 :
-		enemyY += enemyY_change
-		enemyX_change = 5
-	if enemyX > 736 :
-		enemyY += enemyY_change
-		enemyX_change = -5
+	for i in range(num_of_enemies):
+		enemyX[i] = enemyX[i] + enemyX_change[i]
+		if enemyX[i] < 0 :
+			enemyY[i] += enemyY_change[i]
+			enemyX_change[i] = 5
+		if enemyX[i] > 736 :
+			enemyY[i] += enemyY_change[i]
+			enemyX_change[i] = -5
+		for j3 in range(number_of_strikes):
+			collision = is_Collision(enemyX[i], enemyY[i], bulletX[j3], bulletY[j3])
+			if collision :
+				bulletY[j3] = 480
+				bullet_state[j3] = 'ready'
+				score += 1
+				enemyX[i] = random.randint(0,736)
+				enemyY[i] = random.randint(20, 200)
+				#print(score)
 
-	collision = is_Collision(enemyX, enemyY, bulletX, bulletY)
-	if collision :
-		bulletY = 480
-		bullet_state = 'ready'
-		score += 1
-		enemyX = random.randint(0,736)
-		enemyY = random.randint(20, 200)
-		print(score)
+		enemy(enemyX[i], enemyY[i], i)
 
-	enemy(enemyX, enemyY)
 	player(playerX, playerY)
 	pygame.display.update()
 
