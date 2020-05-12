@@ -13,6 +13,14 @@ pygame.display.set_icon(icon)
 
 #background
 background_img = pygame.image.load('spritesandimages/background_set.png')
+ 
+#bullet 
+bullet_img = pygame.image.load('spritesandimages/bullet.png')
+bulletX = 0
+bulletY = 480
+bulletX_change = 0
+bulletY_change = 10
+bullet_state = 'ready'
 
 #Player
 player_img = pygame.image.load('spritesandimages/space_ship.png')
@@ -24,7 +32,7 @@ playerX_change = 0
 enemy_img = pygame.image.load('spritesandimages/enemy.png')
 enemyX = random.randint(0,800)
 enemyY = random.randint(20, 200)
-enemyX_change = 0.3
+enemyX_change = 5
 enemyY_change = 40
 
 def player(x, y):
@@ -33,11 +41,17 @@ def player(x, y):
 def enemy(x, y):
 	screen.blit(enemy_img, (x, y)) 
 
+def fire_bullet(x, y):
+	global bullet_state
+	bullet_state ='fire'
+	screen.blit(bullet_img, (x+16, y+10))
+
+
 #Game Loop
 running = True
 while  running:
 	#screen colour
-	screen.fill((0, 0, 0))
+	#screen.fill((0, 0, 0))
 	screen.blit(background_img, (0,0))
 
 	for events in pygame.event.get():
@@ -48,12 +62,24 @@ while  running:
 		#keystrokes 
 		if events.type == pygame.KEYDOWN:
 			if events.key == pygame.K_LEFT:
-				playerX_change = -0.3
+				playerX_change = -5
 			if events.key == pygame.K_RIGHT:
-				playerX_change = 0.3
+				playerX_change = 5
+			if events.key == pygame.K_UP:
+				bullet_state = 'fire'
+
 		if events.type == pygame.KEYUP:
 			if events.key == pygame.K_LEFT or events.key == pygame.K_RIGHT:
 				playerX_change = 0
+
+	if bullet_state is 'fire':
+		bulletY -= bulletY_change
+		fire_bullet(playerX, bulletY)
+	if bulletY <= 0:
+		bulletY = 480
+		bullet_state = 'ready'
+	print(bullet_state)
+
 
 	playerX = playerX + playerX_change
 	if playerX < 0 :
@@ -64,10 +90,10 @@ while  running:
 	enemyX = enemyX + enemyX_change
 	if enemyX < 0 :
 		enemyY += enemyY_change
-		enemyX_change = 0.3
+		enemyX_change = 5
 	if enemyX > 736 :
 		enemyY += enemyY_change
-		enemyX_change = -0.3
+		enemyX_change = -5
 
 	enemy(enemyX, enemyY)
 	player(playerX, playerY)
