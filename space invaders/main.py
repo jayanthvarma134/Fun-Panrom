@@ -24,14 +24,7 @@ bulletX = []
 bulletY = []
 bulletX_change = []
 bulletY_change = []
-#bullet_state = []
 
-'''bullet_img = pygame.image.load('spritesandimages/bullet.png')
-bulletX = 0
-bulletY = 480
-bulletX_change = 0
-bulletY_change = 10'''
-#bullet state
 bullet_state = []
 for i in range(150):
 	bullet_state.append('ready')
@@ -49,11 +42,14 @@ enemyX=[]
 enemyY=[]
 enemyX_change =[]
 enemyY_change=[]
+left_right = [-1,1]
+
 for i in range(num_of_enemies):
 	enemy_img.append(pygame.image.load('spritesandimages/enemy.png'))
 	enemyX.append(random.randint(0,736))
 	enemyY.append(random.randint(20, 200))
-	enemyX_change.append(5)
+	enemy_left_right = random.choice(left_right)
+	enemyX_change.append(5*enemy_left_right)
 	enemyY_change.append(40)
 
 def player(x, y):
@@ -140,7 +136,7 @@ while running:
 				score += 1
 				enemyX[i] = random.randint(0,736)
 				enemyY[i] = random.randint(20, 200)
-				#print(score)
+				print(score)
 
 		enemy(enemyX[i], enemyY[i], i)
 
