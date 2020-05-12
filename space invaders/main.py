@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 #initialize pygame
 pygame.init()
 
@@ -13,6 +14,8 @@ pygame.display.set_icon(icon)
 
 #background
 background_img = pygame.image.load('spritesandimages/background_set.png')
+
+score = 0
  
 #bullet 
 bullet_img = pygame.image.load('spritesandimages/bullet.png')
@@ -30,7 +33,7 @@ playerX_change = 0
 
 #Enemy
 enemy_img = pygame.image.load('spritesandimages/enemy.png')
-enemyX = random.randint(0,800)
+enemyX = random.randint(0,736)
 enemyY = random.randint(20, 200)
 enemyX_change = 5
 enemyY_change = 40
@@ -46,10 +49,16 @@ def fire_bullet(x, y):
 	bullet_state ='fire'
 	screen.blit(bullet_img, (x+16, y+10))
 
+def is_Collision(enemyX, enemyY, bulletX, bulletY):
+	distance = math.sqrt(math.pow(enemyX-bulletX, 2) + pow(enemyY-bulletY, 2))
+	if distance <= 27 :
+		return True
+	else :
+		return False
 
 #Game Loop
 running = True
-while  running:
+while running:
 	#screen colour
 	#screen.fill((0, 0, 0))
 	screen.blit(background_img, (0,0))
@@ -65,8 +74,10 @@ while  running:
 				playerX_change = -5
 			if events.key == pygame.K_RIGHT:
 				playerX_change = 5
-			if events.key == pygame.K_UP:
-				bullet_state = 'fire'
+			if events.key == pygame.K_UP: 
+				if bullet_state is 'ready':
+					bullet_state = 'fire'
+					bulletX= playerX
 
 		if events.type == pygame.KEYUP:
 			if events.key == pygame.K_LEFT or events.key == pygame.K_RIGHT:
@@ -74,12 +85,10 @@ while  running:
 
 	if bullet_state is 'fire':
 		bulletY -= bulletY_change
-		fire_bullet(playerX, bulletY)
+		fire_bullet(bulletX, bulletY)
 	if bulletY <= 0:
 		bulletY = 480
 		bullet_state = 'ready'
-	print(bullet_state)
-
 
 	playerX = playerX + playerX_change
 	if playerX < 0 :
@@ -94,6 +103,15 @@ while  running:
 	if enemyX > 736 :
 		enemyY += enemyY_change
 		enemyX_change = -5
+
+	collision = is_Collision(enemyX, enemyY, bulletX, bulletY)
+	if collision :
+		bulletY = 480
+		bullet_state = 'ready'
+		score += 1
+		enemyX = random.randint(0,736)
+		enemyY = random.randint(20, 200)
+		print(score)
 
 	enemy(enemyX, enemyY)
 	player(playerX, playerY)
