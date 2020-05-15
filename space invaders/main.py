@@ -19,14 +19,15 @@ score = 0
  
 #bullet 
 number_of_strikes = 0
+number_of_bullets = 150
 bullet_img =[]
 bulletX = []
 bulletY = []
 bulletX_change = []
 bulletY_change = []
-
 bullet_state = []
-for i in range(150):
+
+for i in range(number_of_bullets):
 	bullet_state.append('ready')
 
 #Player
