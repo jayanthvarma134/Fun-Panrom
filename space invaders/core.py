@@ -15,7 +15,9 @@ pygame.display.set_icon(icon)
 #background
 background_img = pygame.image.load('spritesandimages/background_set.png')
 
+#Score
 score = 0
+font = pygame.font.Font('freesansbold.ttf', 32)
  
 #bullet 
 number_of_strikes = 0
