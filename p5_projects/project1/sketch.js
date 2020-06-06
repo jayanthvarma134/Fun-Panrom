@@ -1,3 +1,5 @@
+var flower;
+
 function setup() {
     createCanvas(400, 400);
     flower = {
@@ -7,7 +9,7 @@ function setup() {
 }
 
 function draw() {
-    backgound(150);
+    background(0);
     fill(flower.col);
     text(flower.name, 5, 5);
     
