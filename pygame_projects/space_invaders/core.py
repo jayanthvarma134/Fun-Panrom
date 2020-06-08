@@ -18,6 +18,13 @@ background_img = pygame.image.load('spritesandimages/background_set.png')
 #Score
 score = 0
 font = pygame.font.Font('freesansbold.ttf', 32)
+
+textX = 10
+textY = 10
+
+def show_score(x, y) :
+	score_val = font.render("Score : " + str(score), True, (255,255,255))
+	screen.blit(score_val, (x,y))
  
 #bullet 
 number_of_strikes = 0
@@ -144,5 +151,6 @@ while running:
 		enemy(enemyX[i], enemyY[i], i)
 
 	player(playerX, playerY)
+	show_score(textX, textY)
 	pygame.display.update()
 
