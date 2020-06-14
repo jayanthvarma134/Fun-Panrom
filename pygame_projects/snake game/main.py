@@ -107,6 +107,15 @@ class snake():
 			else:
 				c.draw(surface)
 
+	def reset(self,pos):
+		self.body = []
+		self.head = cube(pos)
+		self.body.append(self.head)
+		self.turns = {}
+		self.dirx = 1
+		self.diry = 0
+
+
 def random_snack(item):
 	positions = item.body
 	while True:
@@ -137,6 +146,16 @@ def update_win(window_):
 	snack.draw(window_)
 	pygame.display.update()
 
+def message_box(sub, content):
+	root = tk.Tk()
+	root.attributes("-topmost",  True)
+	root.withdraw()
+	messagebox.showinfo(sub, content)
+	'''try:
+		root.destroy()
+	except:
+		pass'''
+
 def main():
 	global width, rows, block_size, s, snack
 	width = 500
@@ -150,6 +169,13 @@ def main():
 	while(run):
 		pygame.time.delay(150)
 		#clock.tick(10)
+		for x in range(len(s.body)):
+			if s.body[x].pos in list(map(lambda z:z.pos, s.body[x+1:])):
+				print('Score:', len(s.body))
+				message_box("You lose", "wanna play again?")
+				s.reset((10, 10))
+				break
+
 		if s.body[0].pos == snack.pos:
 			s.add_cube()
 			snack = cube(random_snack(s), color = (0, 255, 0))
