@@ -4,7 +4,7 @@ import math
 #initialize pygame
 pygame.init()
 
-#creatint screen 
+#creating screen 
 screen = pygame.display.set_mode((800, 600))
 
 #Title
